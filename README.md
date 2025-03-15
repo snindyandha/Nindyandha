@@ -8,13 +8,13 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
             background-color: #d9aeeb;
         }
-
         .calculator {
             background-color: #a364b6;
             padding: 20px;
@@ -23,7 +23,6 @@
             width: 300px;
             text-align: center;
         }
-
         #display {
             width: 90%;
             height: 40px;
@@ -35,13 +34,11 @@
             border-radius: 5px;
             background-color: #fff;
         }
-
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
-
         button {
             padding: 20px;
             font-size: 18px;
@@ -52,23 +49,24 @@
             cursor: pointer;
             font-weight: bold;
         }
-
         button:hover {
             background-color: #b0a7f1;
         }
-
         button.equals {
             background-color: #834fb3;
             color: white;
         }
-
         button.equals:hover {
             background-color: #6a0dad;
+        }
+        #fact {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #4b0082;
         }
     </style>
 </head>
 <body>
-
     <div class="calculator">
         <input type="text" id="display" disabled>
         <div class="buttons">
@@ -90,9 +88,10 @@
             <button class="equals" onclick="calculate()">=</button>
         </div>
     </div>
-
+    <p id="fact"></p>
     <script>
         let display = document.getElementById('display');
+        let fact = document.getElementById('fact');
 
         function appendNumber(number) {
             display.value += number;
@@ -104,21 +103,26 @@
 
         function clearDisplay() {
             display.value = '';
-        }
-
-        function deleteLast() {
-            display.value = display.value.slice(0, -1);
+            fact.innerText = '';
         }
 
         function calculate() {
             try {
-                display.value = eval(display.value);
+                let result = eval(display.value);
+                display.value = result;
+                fetchFact(result);
             } catch (error) {
                 alert("Input tidak valid");
                 clearDisplay();
             }
         }
-    </script>
 
+        function fetchFact(number) {
+            fetch(`http://numbersapi.com/${number}`)
+                .then(response => response.text())
+                .then(data => fact.innerText = `Fakta: ${data}`)
+                .catch(error => fact.innerText = "Tidak dapat mengambil fakta");
+        }
+    </script>
 </body>
 </html>
